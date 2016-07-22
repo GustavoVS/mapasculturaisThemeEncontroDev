@@ -4,4 +4,7 @@ $em = $app->em;
 $conn = $em->getConnection();
 
 return [
+    'xxxx' => function() use($conn){
+
+    }
 ];

@@ -17,7 +17,7 @@ class Theme extends BaseV1\Theme{
            'site: name' => 'Encontro Dev',
            'site: description' => 'Minha nova descrição do site',
 //            'site: in the region' => 'na região',
-//            'site: of the region' => 'da região',
+//            'site: of the region'[] => 'da região',
 //            'site: owner' => 'Secretaria',
 //            'site: by the site owner' => 'pela Secretaria',
 //
@@ -47,10 +47,33 @@ class Theme extends BaseV1\Theme{
         $app->hook('view.render(<<*>>):before', function() use($app) {
             $this->_publishAssets();
         });
+        $app->hook("template(space.<<create|single|edit>>.tab-about-service):begin", function(){
+            $entity = $this->controller->requestedEntity;
+            if(!$entity){
+                $entity = (object) ['area_plantavel' => 0];
+            }
+            $this->part('area_plantavel', ['entity' => $entity]);
+        });
+
+        $app->hook("GET(space.num)", function() use ($app){
+            $spaces = $this;
+            $agents = $app->controller('agent');
+
+            $num_spaces = $spaces->apiQuery([
+                '@count' => 1,
+            ]);
+
+            $this->render('numero', ['numero' => $num_spaces]);
+        });
+
     }
 
     protected function _publishAssets() {
         $this->jsObject['assets']['logo-instituicao'] = $this->asset('img/logo-instituicao.png', false);
+    }
+
+    function register(){
+        die('aqui');
     }
 
 }
